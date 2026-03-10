@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Container } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
+import { APP_NAME } from '../../app/constants';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -28,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children, maxWidth = 'lg' }) => {
                     fontSize: '0.875rem',
                 }}
             >
-                © {new Date().getFullYear()} KalyNow. All rights reserved.
+                © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
             </Box>
         </Box>
     );

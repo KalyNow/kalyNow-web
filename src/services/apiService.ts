@@ -79,13 +79,14 @@ export class ApiService {
         }
     }
 
-    private handleError(error: any): AppError {
+    private handleError(error: unknown): AppError {
         if (error instanceof AppError) return error;
-        if (error?.name === 'AxiosError') {
+        const axiosError = error as Record<string, any>;
+        if (axiosError?.name === 'AxiosError') {
             return new AppError(
-                error.response?.data?.message || error.message,
-                String(error.response?.status || '000'),
-                error.response?.data
+                axiosError.response?.data?.message || axiosError.message,
+                String(axiosError.response?.status || '000'),
+                axiosError.response?.data
             );
         }
         return new AppError('Unknown error', '000', error);

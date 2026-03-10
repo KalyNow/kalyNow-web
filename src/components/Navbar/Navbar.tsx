@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { APP_NAME } from '../../app/constants';
 
 interface NavLink {
     label: string;
@@ -50,7 +51,7 @@ const Navbar: React.FC = () => {
                         sx={{ flexGrow: 1, cursor: 'pointer', fontWeight: 700 }}
                         onClick={() => handleNavigate('/')}
                     >
-                        KalyNow
+                        {APP_NAME}
                     </Typography>
 
                     {isMobile ? (

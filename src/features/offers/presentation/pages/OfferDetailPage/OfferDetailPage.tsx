@@ -14,6 +14,7 @@ import { RootState, AppDispatch } from '../../../../../core/store';
 import { getOfferByIdProvider } from '../../redux/offersProvider';
 import { clearCurrentOffer, clearError } from '../../redux/offersSlice';
 import Layout from '../../../../../components/Layout/Layout';
+import { PLACEHOLDER_IMAGES } from '../../../../../app/constants';
 
 const OfferDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -75,7 +76,7 @@ const OfferDetailPage: React.FC = () => {
 
             <Box
                 component="img"
-                src={currentOffer.imageUrl || 'https://placehold.co/800x300?text=Offer'}
+                src={currentOffer.imageUrl || PLACEHOLDER_IMAGES.offerDetail}
                 alt={currentOffer.title}
                 sx={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 2, mb: 3 }}
             />

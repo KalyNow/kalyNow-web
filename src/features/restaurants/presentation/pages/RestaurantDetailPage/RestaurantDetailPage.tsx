@@ -14,6 +14,7 @@ import { RootState, AppDispatch } from '../../../../../core/store';
 import { getRestaurantByIdProvider } from '../../redux/restaurantsProvider';
 import { clearCurrentRestaurant, clearError } from '../../redux/restaurantsSlice';
 import Layout from '../../../../../components/Layout/Layout';
+import { PLACEHOLDER_IMAGES } from '../../../../../app/constants';
 
 const RestaurantDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -77,7 +78,7 @@ const RestaurantDetailPage: React.FC = () => {
 
             <Box
                 component="img"
-                src={currentRestaurant.imageUrl || 'https://placehold.co/800x300?text=Restaurant'}
+                src={currentRestaurant.imageUrl || PLACEHOLDER_IMAGES.restaurantDetail}
                 alt={currentRestaurant.name}
                 sx={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 2, mb: 3 }}
             />

@@ -20,6 +20,7 @@ import { RootState, AppDispatch } from '../../../../../core/store';
 import { getRestaurantsProvider } from '../../redux/restaurantsProvider';
 import { clearError } from '../../redux/restaurantsSlice';
 import Layout from '../../../../../components/Layout/Layout';
+import { PLACEHOLDER_IMAGES } from '../../../../../app/constants';
 
 const RestaurantsPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -101,7 +102,7 @@ const RestaurantsPage: React.FC = () => {
                                         <CardMedia
                                             component="img"
                                             height="160"
-                                            image={restaurant.imageUrl || 'https://placehold.co/400x160?text=Restaurant'}
+                                            image={restaurant.imageUrl || PLACEHOLDER_IMAGES.restaurant}
                                             alt={restaurant.name}
                                         />
                                         <CardContent>

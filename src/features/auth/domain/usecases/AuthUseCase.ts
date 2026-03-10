@@ -14,12 +14,10 @@ export class AuthUseCase implements IAuthUseCase {
     }
 
     async login(params: LoginParams): Promise<Either<AppError, AuthTokens>> {
-        if (!params.email || !params.email.trim()) {
-            return left(new AppError('Email is required', '400', 'validation_error'));
-        }
-        if (!params.password || params.password.length < 6) {
-            return left(new AppError('Password must be at least 6 characters', '400', 'validation_error'));
-        }
+        const emailError = this.validateEmail(params.email);
+        if (emailError) return left(emailError);
+        const passwordError = this.validatePassword(params.password);
+        if (passwordError) return left(passwordError);
         return this.repository.login(params);
     }
 
@@ -30,16 +28,28 @@ export class AuthUseCase implements IAuthUseCase {
         if (!params.lastName || !params.lastName.trim()) {
             return left(new AppError('Last name is required', '400', 'validation_error'));
         }
-        if (!params.email || !params.email.trim()) {
-            return left(new AppError('Email is required', '400', 'validation_error'));
-        }
-        if (!params.password || params.password.length < 6) {
-            return left(new AppError('Password must be at least 6 characters', '400', 'validation_error'));
-        }
+        const emailError = this.validateEmail(params.email);
+        if (emailError) return left(emailError);
+        const passwordError = this.validatePassword(params.password);
+        if (passwordError) return left(passwordError);
         return this.repository.register(params);
     }
 
     async logout(): Promise<Either<AppError, boolean>> {
         return this.repository.logout();
+    }
+
+    private validateEmail(email: string): AppError | null {
+        if (!email || !email.trim()) {
+            return new AppError('Email is required', '400', 'validation_error');
+        }
+        return null;
+    }
+
+    private validatePassword(password: string): AppError | null {
+        if (!password || password.length < 6) {
+            return new AppError('Password must be at least 6 characters', '400', 'validation_error');
+        }
+        return null;
     }
 }

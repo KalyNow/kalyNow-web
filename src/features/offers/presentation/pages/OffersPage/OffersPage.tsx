@@ -22,6 +22,7 @@ import { RootState, AppDispatch } from '../../../../../core/store';
 import { getOffersProvider } from '../../redux/offersProvider';
 import { clearError } from '../../redux/offersSlice';
 import Layout from '../../../../../components/Layout/Layout';
+import { PLACEHOLDER_IMAGES } from '../../../../../app/constants';
 
 const OffersPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -117,7 +118,7 @@ const OffersPage: React.FC = () => {
                                         <CardMedia
                                             component="img"
                                             height="160"
-                                            image={offer.imageUrl || 'https://placehold.co/400x160?text=Offer'}
+                                            image={offer.imageUrl || PLACEHOLDER_IMAGES.offer}
                                             alt={offer.title}
                                         />
                                         <CardContent>
