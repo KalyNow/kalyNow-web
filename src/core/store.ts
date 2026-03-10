@@ -1,12 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { usersReducer } from '../features/users/presentation/redux/usersSlice';
 import { authReducer } from './redux/authSlice';
+import { authFeatureReducer } from '../features/auth/presentation/redux/authFeatureSlice';
+import { restaurantsReducer } from '../features/restaurants/presentation/redux/restaurantsSlice';
+import { offersReducer } from '../features/offers/presentation/redux/offersSlice';
 
 export const store = configureStore({
     reducer: {
         users: usersReducer,
         auth: authReducer,
-        // Ajoutez vos autres reducers ici
+        authFeature: authFeatureReducer,
+        restaurants: restaurantsReducer,
+        offers: offersReducer,
     },
 });
 

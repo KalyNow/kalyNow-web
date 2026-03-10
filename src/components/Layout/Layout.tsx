@@ -1,0 +1,37 @@
+import React from 'react';
+import { Box, Container } from '@mui/material';
+import Navbar from '../Navbar/Navbar';
+
+interface LayoutProps {
+    children: React.ReactNode;
+    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children, maxWidth = 'lg' }) => {
+    return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Navbar />
+            <Box component="main" sx={{ flexGrow: 1, py: 4 }}>
+                <Container maxWidth={maxWidth}>
+                    {children}
+                </Container>
+            </Box>
+            <Box
+                component="footer"
+                sx={{
+                    py: 2,
+                    px: 3,
+                    mt: 'auto',
+                    backgroundColor: 'grey.100',
+                    textAlign: 'center',
+                    color: 'text.secondary',
+                    fontSize: '0.875rem',
+                }}
+            >
+                © {new Date().getFullYear()} KalyNow. All rights reserved.
+            </Box>
+        </Box>
+    );
+};
+
+export default Layout;
