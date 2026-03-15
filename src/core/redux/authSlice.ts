@@ -61,8 +61,10 @@ export const checkAuthProvider = createAsyncThunk(
         const authService = AuthService.getInstance();
 
         try {
-            const isAuth = authService.isAuthenticated();
-            if (isAuth) {
+            // getValidToken tente automatiquement un refresh si l'access token est expiré
+            // mais que le refresh token est encore valide (7 jours)
+            const tokenResult = await authService.getValidToken();
+            if (tokenResult.isRight()) {
                 const userResult = authService.getCurrentUser();
                 if (userResult.isRight()) {
                     return userResult.value;

@@ -4,7 +4,9 @@
 
 export interface GetRestaurantsFiltersParams {
     page?: number;
+    limit?: number;
     search?: string;
+    ownerId?: string;
     cuisine?: string;
     city?: string;
 }

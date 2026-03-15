@@ -17,10 +17,13 @@ export class RestaurantsDataSource implements IRestaurantsDataSource {
 
     async getRestaurants(
         token: string,
-        _filters: GetRestaurantsFiltersParams
+        filters: GetRestaurantsFiltersParams
     ): Promise<PaginatedArray<RestaurantEntity>> {
-        // /me renvoie les restaurants du vendeur authentifié (tableau simple)
-        const endpoint = '/api/of/restaurants/me';
+        const endpoint =
+            '/api/of/restaurants/me' +
+            `?page=${filters.page || 1}` +
+            `&limit=${filters.limit || 20}` +
+            (filters.search ? `&search=${encodeURIComponent(filters.search)}` : '');
 
         try {
             const response = await this.axiosService.get(endpoint, {
@@ -31,12 +34,16 @@ export class RestaurantsDataSource implements IRestaurantsDataSource {
                 throw new AppError('Empty response', '001', 'restaurants data is empty');
             }
 
-            // L'API renvoie un tableau simple (pas paginé)
-            const items: RestaurantEntity[] = Array.isArray(response.data)
-                ? response.data.map((item: unknown) => RestaurantModel.fromJson(item))
-                : [];
+            // L'API retourne maintenant { data, total, page, limit, totalPages }
+            const body = response.data;
+            const items: RestaurantEntity[] = Array.isArray(body)
+                ? body.map((item: unknown) => RestaurantModel.fromJson(item))
+                : (body.data as unknown[]).map((item) => RestaurantModel.fromJson(item));
+            const totalPages = body.totalPages ?? 1;
+            const currentPage = body.page ?? filters.page ?? 1;
+            const totalItems = body.total ?? items.length;
 
-            return new PaginatedArray(items, 1, 1, items.length);
+            return new PaginatedArray(items, totalPages, currentPage, totalItems);
         } catch (error: any) {
             if (error instanceof AppError) throw error;
             if (error?.name === 'AxiosError') {

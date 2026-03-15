@@ -17,6 +17,7 @@ import OfferDetailPage from '../features/offers/presentation/pages/OfferDetailPa
 // Pages par rôle
 import MaintenancePage from '../features/users/presentation/pages/MaintenancePage';
 import SellerDashboardPage from '../features/restaurants/presentation/pages/SellerDashboardPage/SellerDashboardPage';
+import RestaurantOffersPage from '../features/restaurants/presentation/pages/RestaurantOffersPage/RestaurantOffersPage';
 
 // Guards
 import RoleRoute from './guards/RoleRoute';
@@ -84,6 +85,14 @@ const AppRoutes: React.FC = () => {
                         element={
                             <RoleRoute requiredRole={USER_ROLES.SELLER} fallback="/maintenance">
                                 <SellerDashboardPage />
+                            </RoleRoute>
+                        }
+                    />
+                    <Route
+                        path="/dashboard/seller/restaurants/:restaurantId/offers"
+                        element={
+                            <RoleRoute requiredRole={USER_ROLES.SELLER} fallback="/maintenance">
+                                <RestaurantOffersPage />
                             </RoleRoute>
                         }
                     />

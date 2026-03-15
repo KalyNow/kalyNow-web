@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
     Box,
     Typography,
@@ -37,6 +38,7 @@ import { getAssetUrl } from '../../../../../core/utils/assetUrl';
 import { Blob } from '../../../../../core/components/brand/BrandUI';
 import { BRAND } from '../../../../../core/theme/brandTokens';
 import logoWithText from '../../../../../core/assets/LOGos/logo-with-text.svg';
+import AppPagination from '../../../../../core/components/pagination/AppPagination';
 
 // ─── Glass card réutilisable localement ──────────────────────────────────────
 const GlassPaper: React.FC<{ children: React.ReactNode; sx?: object }> = ({ children, sx = {} }) => (
@@ -81,6 +83,7 @@ const emptyForm: CreateForm = {
 // ─── Composant principal ─────────────────────────────────────────────────────
 const SellerDashboardPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
 
     const { user } = useSelector((state: RootState) => state.auth);
     const { restaurants, loading, createLoading, logoLoading, error, success } = useSelector(
@@ -91,6 +94,8 @@ const SellerDashboardPage: React.FC = () => {
     const [form, setForm] = useState<CreateForm>(emptyForm);
     const [formErrors, setFormErrors] = useState<Partial<CreateForm>>({});
     const [gpsLoading, setGpsLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(20);
 
     // Référence sur l'input file caché pour l'upload logo
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -113,7 +118,7 @@ const SellerDashboardPage: React.FC = () => {
 
     // Chargement initial
     useEffect(() => {
-        dispatch(getRestaurantsProvider({ page: 1 }));
+        dispatch(getRestaurantsProvider({ page: 1, limit }));
     }, [dispatch]);
 
     // Nettoyage messages
@@ -134,9 +139,9 @@ const SellerDashboardPage: React.FC = () => {
     // Recharge après création réussie
     useEffect(() => {
         if (success) {
-            dispatch(getRestaurantsProvider({ page: 1 }));
+            dispatch(getRestaurantsProvider({ page: currentPage, limit }));
         }
-    }, [success, dispatch]);
+    }, [success, dispatch, currentPage, limit]);
 
     // ── Formulaire ──────────────────────────────────────────────────────────
     const handleChange = (field: keyof CreateForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,6 +201,18 @@ const SellerDashboardPage: React.FC = () => {
     const handleLogout = () => dispatch(logoutProvider());
 
     const totalRestaurants = restaurants?.totalItems ?? 0;
+    const totalPages = restaurants?.totalPages ?? 1;
+
+    const handlePageChange = (p: number) => {
+        setCurrentPage(p);
+        dispatch(getRestaurantsProvider({ page: p, limit }));
+    };
+
+    const handleLimitChange = (l: number) => {
+        setLimit(l);
+        setCurrentPage(1);
+        dispatch(getRestaurantsProvider({ page: 1, limit: l }));
+    };
 
     // ─── Render ──────────────────────────────────────────────────────────────
     return (
@@ -427,150 +444,162 @@ const SellerDashboardPage: React.FC = () => {
 
                     {/* Grille restaurants */}
                     {!loading && restaurants && restaurants.data.length > 0 && (
-                        <Box
-                            sx={{
-                                display: 'grid',
-                                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(3, 1fr)' },
-                                gap: 3,
-                            }}
-                        >
-                            {restaurants.data.map((restaurant) => (
-                                <GlassPaper
-                                    key={restaurant.id}
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: 1.5,
-                                        transition: 'transform 0.2s, box-shadow 0.2s',
-                                        '&:hover': {
-                                            transform: 'translateY(-4px)',
-                                            boxShadow: `0 12px 40px ${BRAND.primary}33`,
-                                        },
-                                    }}
-                                >
-                                    {/* Avatar + nom */}
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                        <Box sx={{ position: 'relative', flexShrink: 0 }}>
-                                            <Avatar
-                                                src={getAssetUrl(restaurant.logoUrl) ?? undefined}
-                                                sx={{
-                                                    background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.secondary})`,
-                                                    width: 44,
-                                                    height: 44,
-                                                }}
-                                            >
-                                                <StorefrontIcon sx={{ fontSize: 22 }} />
-                                            </Avatar>
-                                            <Tooltip title="Changer le logo">
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => handleLogoUpload(restaurant.id)}
-                                                    disabled={logoLoading === restaurant.id}
-                                                    sx={{
-                                                        position: 'absolute',
-                                                        bottom: -4,
-                                                        right: -4,
-                                                        width: 20,
-                                                        height: 20,
-                                                        background: BRAND.primary,
-                                                        '&:hover': { background: BRAND.secondary },
-                                                        '&.Mui-disabled': { background: BRAND.glassBorder },
-                                                    }}
-                                                >
-                                                    {logoLoading === restaurant.id
-                                                        ? <CircularProgress size={10} sx={{ color: '#fff' }} />
-                                                        : <CameraAltIcon sx={{ fontSize: 12, color: '#fff' }} />
-                                                    }
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Box>
-                                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                                            <Typography
-                                                variant="subtitle1"
-                                                fontWeight={700}
-                                                noWrap
-                                                sx={{ color: '#fff', lineHeight: 1.2 }}
-                                            >
-                                                {restaurant.name}
-                                            </Typography>
-                                            <Typography variant="caption" sx={{ color: BRAND.textMuted }}>
-                                                {restaurant.address}
-                                            </Typography>
-                                        </Box>
-                                        <Chip
-                                            icon={
-                                                restaurant.isOpen ? (
-                                                    <CheckCircleIcon sx={{ fontSize: '14px !important' }} />
-                                                ) : (
-                                                    <CancelIcon sx={{ fontSize: '14px !important' }} />
-                                                )
-                                            }
-                                            label={restaurant.isOpen ? 'Ouvert' : 'Fermé'}
-                                            size="small"
-                                            sx={{
-                                                background: restaurant.isOpen
-                                                    ? 'rgba(139,226,160,0.15)'
-                                                    : 'rgba(255,100,100,0.12)',
-                                                color: restaurant.isOpen ? '#8BE2A0' : '#FF6464',
-                                                fontWeight: 700,
-                                                fontSize: '0.68rem',
-                                                border: `1px solid ${restaurant.isOpen ? '#8BE2A040' : '#FF646440'}`,
-                                            }}
-                                        />
-                                    </Box>
-
-                                    <Divider sx={{ borderColor: BRAND.glassBorder }} />
-
-                                    {/* Adresse */}
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                        <LocationOnIcon sx={{ fontSize: 16, color: BRAND.textFaint }} />
-                                        <Typography variant="body2" noWrap sx={{ color: BRAND.textMuted }}>
-                                            {restaurant.address}
-                                        </Typography>
-                                    </Box>
-
-                                    {/* Offres */}
-                                    <Box
+                        <>
+                            <Box
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(3, 1fr)' },
+                                    gap: 3,
+                                }}
+                            >
+                                {restaurants.data.map((restaurant) => (
+                                    <GlassPaper
+                                        key={restaurant.id}
                                         sx={{
                                             display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 0.75,
-                                            background: 'rgba(255,176,103,0.07)',
-                                            borderRadius: 2,
-                                            px: 1.5,
-                                            py: 0.75,
-                                        }}
-                                    >
-                                        <LocalOfferIcon sx={{ fontSize: 15, color: BRAND.secondary }} />
-                                        <Typography variant="body2" sx={{ color: BRAND.secondary, fontWeight: 600 }}>
-                                            — offres actives
-                                        </Typography>
-                                    </Box>
-
-                                    {/* Bouton Gérer */}
-                                    <Button
-                                        fullWidth
-                                        variant="outlined"
-                                        endIcon={<ArrowForwardIcon />}
-                                        size="small"
-                                        sx={{
-                                            mt: 'auto',
-                                            borderColor: BRAND.glassBorder,
-                                            color: BRAND.textMuted,
-                                            borderRadius: 99,
-                                            textTransform: 'none',
-                                            fontWeight: 600,
+                                            flexDirection: 'column',
+                                            gap: 1.5,
+                                            transition: 'transform 0.2s, box-shadow 0.2s',
                                             '&:hover': {
-                                                borderColor: BRAND.primary,
-                                                color: BRAND.primary,
+                                                transform: 'translateY(-4px)',
+                                                boxShadow: `0 12px 40px ${BRAND.primary}33`,
                                             },
                                         }}
                                     >
-                                        Gérer
-                                    </Button>
-                                </GlassPaper>
-                            ))}
-                        </Box>
+                                        {/* Avatar + nom */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                            <Box sx={{ position: 'relative', flexShrink: 0 }}>
+                                                <Avatar
+                                                    src={getAssetUrl(restaurant.logoUrl) ?? undefined}
+                                                    sx={{
+                                                        background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.secondary})`,
+                                                        width: 44,
+                                                        height: 44,
+                                                    }}
+                                                >
+                                                    <StorefrontIcon sx={{ fontSize: 22 }} />
+                                                </Avatar>
+                                                <Tooltip title="Changer le logo">
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => handleLogoUpload(restaurant.id)}
+                                                        disabled={logoLoading === restaurant.id}
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            bottom: -4,
+                                                            right: -4,
+                                                            width: 20,
+                                                            height: 20,
+                                                            background: BRAND.primary,
+                                                            '&:hover': { background: BRAND.secondary },
+                                                            '&.Mui-disabled': { background: BRAND.glassBorder },
+                                                        }}
+                                                    >
+                                                        {logoLoading === restaurant.id
+                                                            ? <CircularProgress size={10} sx={{ color: '#fff' }} />
+                                                            : <CameraAltIcon sx={{ fontSize: 12, color: '#fff' }} />
+                                                        }
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Box>
+                                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={700}
+                                                    noWrap
+                                                    sx={{ color: '#fff', lineHeight: 1.2 }}
+                                                >
+                                                    {restaurant.name}
+                                                </Typography>
+                                                <Typography variant="caption" sx={{ color: BRAND.textMuted }}>
+                                                    {restaurant.address}
+                                                </Typography>
+                                            </Box>
+                                            <Chip
+                                                icon={
+                                                    restaurant.isOpen ? (
+                                                        <CheckCircleIcon sx={{ fontSize: '14px !important' }} />
+                                                    ) : (
+                                                        <CancelIcon sx={{ fontSize: '14px !important' }} />
+                                                    )
+                                                }
+                                                label={restaurant.isOpen ? 'Ouvert' : 'Fermé'}
+                                                size="small"
+                                                sx={{
+                                                    background: restaurant.isOpen
+                                                        ? 'rgba(139,226,160,0.15)'
+                                                        : 'rgba(255,100,100,0.12)',
+                                                    color: restaurant.isOpen ? '#8BE2A0' : '#FF6464',
+                                                    fontWeight: 700,
+                                                    fontSize: '0.68rem',
+                                                    border: `1px solid ${restaurant.isOpen ? '#8BE2A040' : '#FF646440'}`,
+                                                }}
+                                            />
+                                        </Box>
+
+                                        <Divider sx={{ borderColor: BRAND.glassBorder }} />
+
+                                        {/* Adresse */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                                            <LocationOnIcon sx={{ fontSize: 16, color: BRAND.textFaint }} />
+                                            <Typography variant="body2" noWrap sx={{ color: BRAND.textMuted }}>
+                                                {restaurant.address}
+                                            </Typography>
+                                        </Box>
+
+                                        {/* Offres */}
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 0.75,
+                                                background: 'rgba(255,176,103,0.07)',
+                                                borderRadius: 2,
+                                                px: 1.5,
+                                                py: 0.75,
+                                            }}
+                                        >
+                                            <LocalOfferIcon sx={{ fontSize: 15, color: BRAND.secondary }} />
+                                            <Typography variant="body2" sx={{ color: BRAND.secondary, fontWeight: 600 }}>
+                                                — offres actives
+                                            </Typography>
+                                        </Box>
+
+                                        {/* Bouton Gérer */}
+                                        <Button
+                                            fullWidth
+                                            variant="outlined"
+                                            endIcon={<ArrowForwardIcon />}
+                                            size="small"
+                                            onClick={() => navigate(`/dashboard/seller/restaurants/${restaurant.id}/offers`)}
+                                            sx={{
+                                                mt: 'auto',
+                                                borderColor: BRAND.glassBorder,
+                                                color: BRAND.textMuted,
+                                                borderRadius: 99,
+                                                textTransform: 'none',
+                                                fontWeight: 600,
+                                                '&:hover': {
+                                                    borderColor: BRAND.primary,
+                                                    color: BRAND.primary,
+                                                },
+                                            }}
+                                        >
+                                            Gérer
+                                        </Button>
+                                    </GlassPaper>
+                                ))}
+                            </Box>
+                            <AppPagination
+                                page={currentPage}
+                                totalPages={totalPages}
+                                totalItems={totalRestaurants}
+                                limit={limit}
+                                limitOptions={[10, 20, 50]}
+                                onPageChange={handlePageChange}
+                                onLimitChange={handleLimitChange}
+                            />
+                        </>
                     )}
                 </Box>
 

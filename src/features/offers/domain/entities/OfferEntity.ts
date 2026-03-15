@@ -1,21 +1,34 @@
+export enum OfferStatus {
+    ACTIVE = 'ACTIVE',
+    EXPIRED = 'EXPIRED',
+    INACTIVE = 'INACTIVE',
+}
+
 export class OfferEntity {
     constructor(
         public id: string,
+        public restaurantId: string,
         public title: string,
         public description: string,
-        public restaurantId: string,
-        public restaurantName: string,
-        public discountPercent: number | null,
-        public originalPrice: number | null,
+        public price: number,
         public discountedPrice: number | null,
-        public imageUrl: string | null,
-        public validFrom: Date,
-        public validUntil: Date,
+        public availableFrom: Date | null,
+        public availableTo: Date | null,
+        public imageUrls: string[],
         public isActive: boolean,
-        public createdAt: Date
-    ) {}
+        public quantity: number | null,
+        public createdAt: Date,
+        public updatedAt: Date,
+        /** Champ calculé renvoyé par l'API */
+        public status: OfferStatus = OfferStatus.ACTIVE
+    ) { }
 
     get isExpired(): boolean {
-        return new Date() > this.validUntil;
+        if (!this.availableTo) return false;
+        return new Date() > this.availableTo;
+    }
+
+    get effectivePrice(): number {
+        return this.discountedPrice ?? this.price;
     }
 }
