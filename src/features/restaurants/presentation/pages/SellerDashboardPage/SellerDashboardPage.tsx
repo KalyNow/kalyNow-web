@@ -200,539 +200,539 @@ const SellerDashboardPage: React.FC = () => {
     // ─── Render ──────────────────────────────────────────────────────────────
     return (
         <>
-        {/* Input file caché pour l'upload logo */}
-        <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-        />
-        <Box
-            sx={{
-                minHeight: '100vh',
-                background: BRAND.bg,
-                overflowX: 'hidden',
-                position: 'relative',
-            }}
-        >
-            {/* Blobs décoratifs */}
-            <Blob
-                sx={{
-                    width: 520,
-                    height: 520,
-                    top: -160,
-                    left: -160,
-                    opacity: 0.18,
-                    background: BRAND.primary,
-                }}
+            {/* Input file caché pour l'upload logo */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
             />
-            <Blob
-                sx={{
-                    width: 400,
-                    height: 400,
-                    bottom: -100,
-                    right: -100,
-                    opacity: 0.13,
-                    background: BRAND.secondary,
-                }}
-            />
-
-            {/* ── Header ── */}
             <Box
                 sx={{
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 100,
-                    backdropFilter: 'blur(16px)',
-                    background: 'rgba(18,10,6,0.75)',
-                    borderBottom: `1px solid ${BRAND.glassBorder}`,
-                    px: { xs: 2, md: 5 },
-                    py: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    minHeight: '100vh',
+                    background: BRAND.bg,
+                    overflowX: 'hidden',
+                    position: 'relative',
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box
-                        component="img"
-                        src={logoWithText}
-                        alt="KalyNow"
-                        sx={{ height: 36 }}
-                    />
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography
-                        variant="body2"
-                        sx={{ color: BRAND.textMuted, display: { xs: 'none', sm: 'block' } }}
-                    >
-                        {user?.email}
-                    </Typography>
-                    <Tooltip title="Se déconnecter">
-                        <IconButton onClick={handleLogout} size="small" sx={{ color: BRAND.textMuted }}>
-                            <LogoutIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            </Box>
-
-            {/* ── Contenu principal ── */}
-            <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 }, position: 'relative', zIndex: 1 }}>
-
-                {/* Titre page */}
-                <Box sx={{ mb: 5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                    <Box
-                        component="img"
-                        src={logoWithText}
-                        alt="KalyNow"
-                        sx={{ height: 52, alignSelf: 'flex-start' }}
-                    />
-                    <Typography
-                        variant="h4"
-                        fontWeight={800}
-                        sx={{
-                            background: BRAND.shimmer,
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            mb: 0.5,
-                        }}
-                    >
-                        Tableau de bord
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: BRAND.textMuted }}>
-                        Gérez vos restaurants et vos offres anti-gaspillage.
-                    </Typography>
-                </Box>
-
-                {/* Alertes */}
-                {error && (
-                    <Alert severity="error" onClose={() => dispatch(clearError())} sx={{ mb: 3 }}>
-                        {error}
-                    </Alert>
-                )}
-                {success && (
-                    <Alert severity="success" onClose={() => dispatch(clearSuccess())} sx={{ mb: 3 }}>
-                        {success}
-                    </Alert>
-                )}
-
-                {/* ── Stats cards ── */}
-                <Box
+                {/* Blobs décoratifs */}
+                <Blob
                     sx={{
-                        display: 'grid',
-                        gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(3, 1fr)' },
-                        gap: 2,
-                        mb: 5,
+                        width: 520,
+                        height: 520,
+                        top: -160,
+                        left: -160,
+                        opacity: 0.18,
+                        background: BRAND.primary,
                     }}
-                >
-                    <StatCard
-                        icon={<StorefrontIcon sx={{ fontSize: 28, color: BRAND.primary }} />}
-                        value={loading ? '—' : String(totalRestaurants)}
-                        label="Restaurants"
-                    />
-                    <StatCard
-                        icon={<LocalOfferIcon sx={{ fontSize: 28, color: BRAND.secondary }} />}
-                        value="—"
-                        label="Offres actives"
-                    />
-                    <StatCard
-                        icon={<RestaurantMenuIcon sx={{ fontSize: 28, color: '#8BE2A0' }} />}
-                        value="—"
-                        label="Repas sauvés"
-                    />
-                </Box>
+                />
+                <Blob
+                    sx={{
+                        width: 400,
+                        height: 400,
+                        bottom: -100,
+                        right: -100,
+                        opacity: 0.13,
+                        background: BRAND.secondary,
+                    }}
+                />
 
-                {/* ── En-tête section restaurants ── */}
+                {/* ── Header ── */}
                 <Box
                     sx={{
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 100,
+                        backdropFilter: 'blur(16px)',
+                        background: 'rgba(18,10,6,0.75)',
+                        borderBottom: `1px solid ${BRAND.glassBorder}`,
+                        px: { xs: 2, md: 5 },
+                        py: 1.5,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        mb: 3,
-                        flexWrap: 'wrap',
-                        gap: 2,
                     }}
                 >
-                    <Typography variant="h5" fontWeight={700} sx={{ color: '#fff' }}>
-                        Mes restaurants
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        startIcon={<AddBusinessIcon />}
-                        onClick={() => setDialogOpen(true)}
-                        sx={{
-                            background: BRAND.gradientBtn,
-                            borderRadius: 99,
-                            px: 3,
-                            py: 1,
-                            fontWeight: 700,
-                            textTransform: 'none',
-                            boxShadow: `0 4px 24px ${BRAND.primary}44`,
-                            '&:hover': {
-                                background: BRAND.gradientBtnCta,
-                                boxShadow: `0 6px 28px ${BRAND.primary}66`,
-                            },
-                        }}
-                    >
-                        Ajouter un restaurant
-                    </Button>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box
+                            component="img"
+                            src={logoWithText}
+                            alt="KalyNow"
+                            sx={{ height: 36 }}
+                        />
+                    </Box>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography
+                            variant="body2"
+                            sx={{ color: BRAND.textMuted, display: { xs: 'none', sm: 'block' } }}
+                        >
+                            {user?.email}
+                        </Typography>
+                        <Tooltip title="Se déconnecter">
+                            <IconButton onClick={handleLogout} size="small" sx={{ color: BRAND.textMuted }}>
+                                <LogoutIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Box>
 
-                {/* Loader */}
-                {loading && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                        <CircularProgress sx={{ color: BRAND.primary }} />
-                    </Box>
-                )}
+                {/* ── Contenu principal ── */}
+                <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 }, position: 'relative', zIndex: 1 }}>
 
-                {/* État vide */}
-                {!loading && (!restaurants || restaurants.data.length === 0) && (
-                    <GlassPaper
-                        sx={{
-                            py: 8,
-                            textAlign: 'center',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 2,
-                        }}
-                    >
-                        <StorefrontIcon sx={{ fontSize: 56, color: BRAND.textFaint }} />
-                        <Typography variant="h6" sx={{ color: BRAND.textMuted }} fontWeight={600}>
-                            Aucun restaurant pour le moment
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: BRAND.textFaint, maxWidth: 320 }}>
-                            Créez votre premier restaurant pour commencer à proposer des offres anti-gaspillage.
-                        </Typography>
-                        <Button
-                            variant="outlined"
-                            startIcon={<AddBusinessIcon />}
-                            onClick={() => setDialogOpen(true)}
+                    {/* Titre page */}
+                    <Box sx={{ mb: 5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                        <Box
+                            component="img"
+                            src={logoWithText}
+                            alt="KalyNow"
+                            sx={{ height: 52, alignSelf: 'flex-start' }}
+                        />
+                        <Typography
+                            variant="h4"
+                            fontWeight={800}
                             sx={{
-                                mt: 1,
-                                borderColor: BRAND.primary,
-                                color: BRAND.primary,
-                                borderRadius: 99,
-                                textTransform: 'none',
-                                fontWeight: 700,
-                                '&:hover': { borderColor: BRAND.secondary, color: BRAND.secondary },
+                                background: BRAND.shimmer,
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                mb: 0.5,
                             }}
                         >
-                            Créer mon premier restaurant
-                        </Button>
-                    </GlassPaper>
-                )}
+                            Tableau de bord
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: BRAND.textMuted }}>
+                            Gérez vos restaurants et vos offres anti-gaspillage.
+                        </Typography>
+                    </Box>
 
-                {/* Grille restaurants */}
-                {!loading && restaurants && restaurants.data.length > 0 && (
+                    {/* Alertes */}
+                    {error && (
+                        <Alert severity="error" onClose={() => dispatch(clearError())} sx={{ mb: 3 }}>
+                            {error}
+                        </Alert>
+                    )}
+                    {success && (
+                        <Alert severity="success" onClose={() => dispatch(clearSuccess())} sx={{ mb: 3 }}>
+                            {success}
+                        </Alert>
+                    )}
+
+                    {/* ── Stats cards ── */}
                     <Box
                         sx={{
                             display: 'grid',
-                            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(3, 1fr)' },
-                            gap: 3,
+                            gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(3, 1fr)' },
+                            gap: 2,
+                            mb: 5,
                         }}
                     >
-                        {restaurants.data.map((restaurant) => (
-                            <GlassPaper
-                                key={restaurant.id}
+                        <StatCard
+                            icon={<StorefrontIcon sx={{ fontSize: 28, color: BRAND.primary }} />}
+                            value={loading ? '—' : String(totalRestaurants)}
+                            label="Restaurants"
+                        />
+                        <StatCard
+                            icon={<LocalOfferIcon sx={{ fontSize: 28, color: BRAND.secondary }} />}
+                            value="—"
+                            label="Offres actives"
+                        />
+                        <StatCard
+                            icon={<RestaurantMenuIcon sx={{ fontSize: 28, color: '#8BE2A0' }} />}
+                            value="—"
+                            label="Repas sauvés"
+                        />
+                    </Box>
+
+                    {/* ── En-tête section restaurants ── */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            mb: 3,
+                            flexWrap: 'wrap',
+                            gap: 2,
+                        }}
+                    >
+                        <Typography variant="h5" fontWeight={700} sx={{ color: '#fff' }}>
+                            Mes restaurants
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            startIcon={<AddBusinessIcon />}
+                            onClick={() => setDialogOpen(true)}
+                            sx={{
+                                background: BRAND.gradientBtn,
+                                borderRadius: 99,
+                                px: 3,
+                                py: 1,
+                                fontWeight: 700,
+                                textTransform: 'none',
+                                boxShadow: `0 4px 24px ${BRAND.primary}44`,
+                                '&:hover': {
+                                    background: BRAND.gradientBtnCta,
+                                    boxShadow: `0 6px 28px ${BRAND.primary}66`,
+                                },
+                            }}
+                        >
+                            Ajouter un restaurant
+                        </Button>
+                    </Box>
+
+                    {/* Loader */}
+                    {loading && (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+                            <CircularProgress sx={{ color: BRAND.primary }} />
+                        </Box>
+                    )}
+
+                    {/* État vide */}
+                    {!loading && (!restaurants || restaurants.data.length === 0) && (
+                        <GlassPaper
+                            sx={{
+                                py: 8,
+                                textAlign: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: 2,
+                            }}
+                        >
+                            <StorefrontIcon sx={{ fontSize: 56, color: BRAND.textFaint }} />
+                            <Typography variant="h6" sx={{ color: BRAND.textMuted }} fontWeight={600}>
+                                Aucun restaurant pour le moment
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: BRAND.textFaint, maxWidth: 320 }}>
+                                Créez votre premier restaurant pour commencer à proposer des offres anti-gaspillage.
+                            </Typography>
+                            <Button
+                                variant="outlined"
+                                startIcon={<AddBusinessIcon />}
+                                onClick={() => setDialogOpen(true)}
                                 sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 1.5,
-                                    transition: 'transform 0.2s, box-shadow 0.2s',
-                                    '&:hover': {
-                                        transform: 'translateY(-4px)',
-                                        boxShadow: `0 12px 40px ${BRAND.primary}33`,
-                                    },
+                                    mt: 1,
+                                    borderColor: BRAND.primary,
+                                    color: BRAND.primary,
+                                    borderRadius: 99,
+                                    textTransform: 'none',
+                                    fontWeight: 700,
+                                    '&:hover': { borderColor: BRAND.secondary, color: BRAND.secondary },
                                 }}
                             >
-                                {/* Avatar + nom */}
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                    <Box sx={{ position: 'relative', flexShrink: 0 }}>
-                                        <Avatar
-                                            src={getAssetUrl(restaurant.logoUrl) ?? undefined}
-                                            sx={{
-                                                background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.secondary})`,
-                                                width: 44,
-                                                height: 44,
-                                            }}
-                                        >
-                                            <StorefrontIcon sx={{ fontSize: 22 }} />
-                                        </Avatar>
-                                        <Tooltip title="Changer le logo">
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => handleLogoUpload(restaurant.id)}
-                                                disabled={logoLoading === restaurant.id}
-                                                sx={{
-                                                    position: 'absolute',
-                                                    bottom: -4,
-                                                    right: -4,
-                                                    width: 20,
-                                                    height: 20,
-                                                    background: BRAND.primary,
-                                                    '&:hover': { background: BRAND.secondary },
-                                                    '&.Mui-disabled': { background: BRAND.glassBorder },
-                                                }}
-                                            >
-                                                {logoLoading === restaurant.id
-                                                    ? <CircularProgress size={10} sx={{ color: '#fff' }} />
-                                                    : <CameraAltIcon sx={{ fontSize: 12, color: '#fff' }} />
-                                                }
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Box>
-                                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                                        <Typography
-                                            variant="subtitle1"
-                                            fontWeight={700}
-                                            noWrap
-                                            sx={{ color: '#fff', lineHeight: 1.2 }}
-                                        >
-                                            {restaurant.name}
-                                        </Typography>
-                                        <Typography variant="caption" sx={{ color: BRAND.textMuted }}>
-                                            {restaurant.address}
-                                        </Typography>
-                                    </Box>
-                                    <Chip
-                                        icon={
-                                            restaurant.isOpen ? (
-                                                <CheckCircleIcon sx={{ fontSize: '14px !important' }} />
-                                            ) : (
-                                                <CancelIcon sx={{ fontSize: '14px !important' }} />
-                                            )
-                                        }
-                                        label={restaurant.isOpen ? 'Ouvert' : 'Fermé'}
-                                        size="small"
-                                        sx={{
-                                            background: restaurant.isOpen
-                                                ? 'rgba(139,226,160,0.15)'
-                                                : 'rgba(255,100,100,0.12)',
-                                            color: restaurant.isOpen ? '#8BE2A0' : '#FF6464',
-                                            fontWeight: 700,
-                                            fontSize: '0.68rem',
-                                            border: `1px solid ${restaurant.isOpen ? '#8BE2A040' : '#FF646440'}`,
-                                        }}
-                                    />
-                                </Box>
+                                Créer mon premier restaurant
+                            </Button>
+                        </GlassPaper>
+                    )}
 
-                                <Divider sx={{ borderColor: BRAND.glassBorder }} />
-
-                                {/* Adresse */}
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                    <LocationOnIcon sx={{ fontSize: 16, color: BRAND.textFaint }} />
-                                    <Typography variant="body2" noWrap sx={{ color: BRAND.textMuted }}>
-                                        {restaurant.address}
-                                    </Typography>
-                                </Box>
-
-                                {/* Offres */}
-                                <Box
+                    {/* Grille restaurants */}
+                    {!loading && restaurants && restaurants.data.length > 0 && (
+                        <Box
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(3, 1fr)' },
+                                gap: 3,
+                            }}
+                        >
+                            {restaurants.data.map((restaurant) => (
+                                <GlassPaper
+                                    key={restaurant.id}
                                     sx={{
                                         display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 0.75,
-                                        background: 'rgba(255,176,103,0.07)',
-                                        borderRadius: 2,
-                                        px: 1.5,
-                                        py: 0.75,
-                                    }}
-                                >
-                                    <LocalOfferIcon sx={{ fontSize: 15, color: BRAND.secondary }} />
-                                    <Typography variant="body2" sx={{ color: BRAND.secondary, fontWeight: 600 }}>
-                                        — offres actives
-                                    </Typography>
-                                </Box>
-
-                                {/* Bouton Gérer */}
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    endIcon={<ArrowForwardIcon />}
-                                    size="small"
-                                    sx={{
-                                        mt: 'auto',
-                                        borderColor: BRAND.glassBorder,
-                                        color: BRAND.textMuted,
-                                        borderRadius: 99,
-                                        textTransform: 'none',
-                                        fontWeight: 600,
+                                        flexDirection: 'column',
+                                        gap: 1.5,
+                                        transition: 'transform 0.2s, box-shadow 0.2s',
                                         '&:hover': {
-                                            borderColor: BRAND.primary,
-                                            color: BRAND.primary,
+                                            transform: 'translateY(-4px)',
+                                            boxShadow: `0 12px 40px ${BRAND.primary}33`,
                                         },
                                     }}
                                 >
-                                    Gérer
-                                </Button>
-                            </GlassPaper>
-                        ))}
-                    </Box>
-                )}
-            </Box>
+                                    {/* Avatar + nom */}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                        <Box sx={{ position: 'relative', flexShrink: 0 }}>
+                                            <Avatar
+                                                src={getAssetUrl(restaurant.logoUrl) ?? undefined}
+                                                sx={{
+                                                    background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.secondary})`,
+                                                    width: 44,
+                                                    height: 44,
+                                                }}
+                                            >
+                                                <StorefrontIcon sx={{ fontSize: 22 }} />
+                                            </Avatar>
+                                            <Tooltip title="Changer le logo">
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => handleLogoUpload(restaurant.id)}
+                                                    disabled={logoLoading === restaurant.id}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        bottom: -4,
+                                                        right: -4,
+                                                        width: 20,
+                                                        height: 20,
+                                                        background: BRAND.primary,
+                                                        '&:hover': { background: BRAND.secondary },
+                                                        '&.Mui-disabled': { background: BRAND.glassBorder },
+                                                    }}
+                                                >
+                                                    {logoLoading === restaurant.id
+                                                        ? <CircularProgress size={10} sx={{ color: '#fff' }} />
+                                                        : <CameraAltIcon sx={{ fontSize: 12, color: '#fff' }} />
+                                                    }
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+                                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                                            <Typography
+                                                variant="subtitle1"
+                                                fontWeight={700}
+                                                noWrap
+                                                sx={{ color: '#fff', lineHeight: 1.2 }}
+                                            >
+                                                {restaurant.name}
+                                            </Typography>
+                                            <Typography variant="caption" sx={{ color: BRAND.textMuted }}>
+                                                {restaurant.address}
+                                            </Typography>
+                                        </Box>
+                                        <Chip
+                                            icon={
+                                                restaurant.isOpen ? (
+                                                    <CheckCircleIcon sx={{ fontSize: '14px !important' }} />
+                                                ) : (
+                                                    <CancelIcon sx={{ fontSize: '14px !important' }} />
+                                                )
+                                            }
+                                            label={restaurant.isOpen ? 'Ouvert' : 'Fermé'}
+                                            size="small"
+                                            sx={{
+                                                background: restaurant.isOpen
+                                                    ? 'rgba(139,226,160,0.15)'
+                                                    : 'rgba(255,100,100,0.12)',
+                                                color: restaurant.isOpen ? '#8BE2A0' : '#FF6464',
+                                                fontWeight: 700,
+                                                fontSize: '0.68rem',
+                                                border: `1px solid ${restaurant.isOpen ? '#8BE2A040' : '#FF646440'}`,
+                                            }}
+                                        />
+                                    </Box>
 
-            {/* ── Dialog création restaurant ── */}
-            <Dialog
-                open={dialogOpen}
-                onClose={handleDialogClose}
-                maxWidth="sm"
-                fullWidth
-                PaperProps={{
-                    sx: {
-                        background: 'rgba(24,14,8,0.97)',
-                        border: `1px solid ${BRAND.glassBorder}`,
-                        borderRadius: 4,
-                        backdropFilter: 'blur(24px)',
-                    },
-                }}
-            >
-                <DialogTitle
-                    sx={{
-                        color: '#fff',
-                        fontWeight: 800,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
+                                    <Divider sx={{ borderColor: BRAND.glassBorder }} />
+
+                                    {/* Adresse */}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                                        <LocationOnIcon sx={{ fontSize: 16, color: BRAND.textFaint }} />
+                                        <Typography variant="body2" noWrap sx={{ color: BRAND.textMuted }}>
+                                            {restaurant.address}
+                                        </Typography>
+                                    </Box>
+
+                                    {/* Offres */}
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 0.75,
+                                            background: 'rgba(255,176,103,0.07)',
+                                            borderRadius: 2,
+                                            px: 1.5,
+                                            py: 0.75,
+                                        }}
+                                    >
+                                        <LocalOfferIcon sx={{ fontSize: 15, color: BRAND.secondary }} />
+                                        <Typography variant="body2" sx={{ color: BRAND.secondary, fontWeight: 600 }}>
+                                            — offres actives
+                                        </Typography>
+                                    </Box>
+
+                                    {/* Bouton Gérer */}
+                                    <Button
+                                        fullWidth
+                                        variant="outlined"
+                                        endIcon={<ArrowForwardIcon />}
+                                        size="small"
+                                        sx={{
+                                            mt: 'auto',
+                                            borderColor: BRAND.glassBorder,
+                                            color: BRAND.textMuted,
+                                            borderRadius: 99,
+                                            textTransform: 'none',
+                                            fontWeight: 600,
+                                            '&:hover': {
+                                                borderColor: BRAND.primary,
+                                                color: BRAND.primary,
+                                            },
+                                        }}
+                                    >
+                                        Gérer
+                                    </Button>
+                                </GlassPaper>
+                            ))}
+                        </Box>
+                    )}
+                </Box>
+
+                {/* ── Dialog création restaurant ── */}
+                <Dialog
+                    open={dialogOpen}
+                    onClose={handleDialogClose}
+                    maxWidth="sm"
+                    fullWidth
+                    PaperProps={{
+                        sx: {
+                            background: 'rgba(24,14,8,0.97)',
+                            border: `1px solid ${BRAND.glassBorder}`,
+                            borderRadius: 4,
+                            backdropFilter: 'blur(24px)',
+                        },
                     }}
                 >
-                    <AddBusinessIcon sx={{ color: BRAND.primary }} />
-                    Nouveau restaurant
-                </DialogTitle>
+                    <DialogTitle
+                        sx={{
+                            color: '#fff',
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                        }}
+                    >
+                        <AddBusinessIcon sx={{ color: BRAND.primary }} />
+                        Nouveau restaurant
+                    </DialogTitle>
 
-                <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '8px !important' }}>
-                    <FormField
-                        label="Nom du restaurant *"
-                        value={form.name}
-                        onChange={handleChange('name')}
-                        error={formErrors.name}
-                        placeholder="Le Comptoir du Goût"
-                    />
-                    <FormField
-                        label="Description *"
-                        value={form.description}
-                        onChange={handleChange('description')}
-                        error={formErrors.description}
-                        placeholder="Une courte description de votre établissement"
-                        multiline
-                        rows={3}
-                    />
-                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                    <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '8px !important' }}>
                         <FormField
-                            label="Adresse *"
-                            value={form.address}
-                            onChange={handleChange('address')}
-                            error={formErrors.address}
-                            placeholder="12 rue de la Paix, Antananarivo"
+                            label="Nom du restaurant *"
+                            value={form.name}
+                            onChange={handleChange('name')}
+                            error={formErrors.name}
+                            placeholder="Le Comptoir du Goût"
                         />
                         <FormField
-                            label="Téléphone"
-                            value={form.phone}
-                            onChange={handleChange('phone')}
-                            placeholder="+261 34 00 000 00"
+                            label="Description *"
+                            value={form.description}
+                            onChange={handleChange('description')}
+                            error={formErrors.description}
+                            placeholder="Une courte description de votre établissement"
+                            multiline
+                            rows={3}
                         />
-                    </Box>
-                    <FormField
-                        label="Email"
-                        value={form.email}
-                        onChange={handleChange('email')}
-                        placeholder="contact@restaurant.mg"
-                    />
-
-                    {/* GPS */}
-                    <Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                            <Typography variant="caption" sx={{ color: BRAND.textMuted, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                Localisation GPS
-                            </Typography>
-                            <Button
-                                size="small"
-                                startIcon={gpsLoading
-                                    ? <CircularProgress size={14} sx={{ color: BRAND.primary }} />
-                                    : <MyLocationIcon sx={{ fontSize: 16 }} />}
-                                onClick={handleGeolocate}
-                                disabled={gpsLoading}
-                                sx={{
-                                    color: BRAND.primary,
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    fontSize: '0.75rem',
-                                    px: 1.5,
-                                    py: 0.5,
-                                    borderRadius: 99,
-                                    border: `1px solid ${BRAND.primary}44`,
-                                    '&:hover': { background: `${BRAND.primary}15` },
-                                }}
-                            >
-                                {gpsLoading ? 'Localisation…' : 'Ma position'}
-                            </Button>
-                        </Box>
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
                             <FormField
-                                label="Latitude"
-                                value={form.latitude}
-                                onChange={handleChange('latitude')}
-                                placeholder="-21.454500"
+                                label="Adresse *"
+                                value={form.address}
+                                onChange={handleChange('address')}
+                                error={formErrors.address}
+                                placeholder="12 rue de la Paix, Antananarivo"
                             />
                             <FormField
-                                label="Longitude"
-                                value={form.longitude}
-                                onChange={handleChange('longitude')}
-                                placeholder="47.083300"
+                                label="Téléphone"
+                                value={form.phone}
+                                onChange={handleChange('phone')}
+                                placeholder="+261 34 00 000 00"
                             />
                         </Box>
-                        {form.latitude && form.longitude && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 1 }}>
-                                <MyLocationIcon sx={{ fontSize: 14, color: '#8BE2A0' }} />
-                                <Typography variant="caption" sx={{ color: '#8BE2A0' }}>
-                                    {parseFloat(form.latitude).toFixed(4)}°, {parseFloat(form.longitude).toFixed(4)}°
-                                </Typography>
-                            </Box>
-                        )}
-                    </Box>
-                </DialogContent>
+                        <FormField
+                            label="Email"
+                            value={form.email}
+                            onChange={handleChange('email')}
+                            placeholder="contact@restaurant.mg"
+                        />
 
-                <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-                    <Button
-                        onClick={handleDialogClose}
-                        sx={{
-                            color: BRAND.textMuted,
-                            textTransform: 'none',
-                            fontWeight: 600,
-                            borderRadius: 99,
-                        }}
-                    >
-                        Annuler
-                    </Button>
-                    <Button
-                        onClick={handleSubmit}
-                        variant="contained"
-                        disabled={createLoading}
-                        startIcon={
-                            createLoading ? (
-                                <CircularProgress size={16} sx={{ color: '#fff' }} />
-                            ) : (
-                                <AddBusinessIcon />
-                            )
-                        }
-                        sx={{
-                            background: BRAND.gradientBtn,
-                            borderRadius: 99,
-                            px: 3,
-                            fontWeight: 700,
-                            textTransform: 'none',
-                            '&:hover': { background: BRAND.gradientBtnCta },
-                            '&.Mui-disabled': { opacity: 0.5 },
-                        }}
-                    >
-                        {createLoading ? 'Création…' : 'Créer le restaurant'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Box>
-    </>
+                        {/* GPS */}
+                        <Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                                <Typography variant="caption" sx={{ color: BRAND.textMuted, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    Localisation GPS
+                                </Typography>
+                                <Button
+                                    size="small"
+                                    startIcon={gpsLoading
+                                        ? <CircularProgress size={14} sx={{ color: BRAND.primary }} />
+                                        : <MyLocationIcon sx={{ fontSize: 16 }} />}
+                                    onClick={handleGeolocate}
+                                    disabled={gpsLoading}
+                                    sx={{
+                                        color: BRAND.primary,
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        fontSize: '0.75rem',
+                                        px: 1.5,
+                                        py: 0.5,
+                                        borderRadius: 99,
+                                        border: `1px solid ${BRAND.primary}44`,
+                                        '&:hover': { background: `${BRAND.primary}15` },
+                                    }}
+                                >
+                                    {gpsLoading ? 'Localisation…' : 'Ma position'}
+                                </Button>
+                            </Box>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                                <FormField
+                                    label="Latitude"
+                                    value={form.latitude}
+                                    onChange={handleChange('latitude')}
+                                    placeholder="-21.454500"
+                                />
+                                <FormField
+                                    label="Longitude"
+                                    value={form.longitude}
+                                    onChange={handleChange('longitude')}
+                                    placeholder="47.083300"
+                                />
+                            </Box>
+                            {form.latitude && form.longitude && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 1 }}>
+                                    <MyLocationIcon sx={{ fontSize: 14, color: '#8BE2A0' }} />
+                                    <Typography variant="caption" sx={{ color: '#8BE2A0' }}>
+                                        {parseFloat(form.latitude).toFixed(4)}°, {parseFloat(form.longitude).toFixed(4)}°
+                                    </Typography>
+                                </Box>
+                            )}
+                        </Box>
+                    </DialogContent>
+
+                    <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
+                        <Button
+                            onClick={handleDialogClose}
+                            sx={{
+                                color: BRAND.textMuted,
+                                textTransform: 'none',
+                                fontWeight: 600,
+                                borderRadius: 99,
+                            }}
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            onClick={handleSubmit}
+                            variant="contained"
+                            disabled={createLoading}
+                            startIcon={
+                                createLoading ? (
+                                    <CircularProgress size={16} sx={{ color: '#fff' }} />
+                                ) : (
+                                    <AddBusinessIcon />
+                                )
+                            }
+                            sx={{
+                                background: BRAND.gradientBtn,
+                                borderRadius: 99,
+                                px: 3,
+                                fontWeight: 700,
+                                textTransform: 'none',
+                                '&:hover': { background: BRAND.gradientBtnCta },
+                                '&.Mui-disabled': { opacity: 0.5 },
+                            }}
+                        >
+                            {createLoading ? 'Création…' : 'Créer le restaurant'}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Box>
+        </>
     );
 };
 
