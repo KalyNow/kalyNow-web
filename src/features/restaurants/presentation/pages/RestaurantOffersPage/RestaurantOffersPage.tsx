@@ -617,7 +617,7 @@ const RestaurantOffersPage: React.FC = () => {
                                             </Button>
                                             <Tooltip title={
                                                 offer.status === OfferStatus.EXPIRED ? 'Offre expirée' :
-                                                offer.status === OfferStatus.ACTIVE ? 'Désactiver' : 'Réactiver'
+                                                    offer.status === OfferStatus.ACTIVE ? 'Désactiver' : 'Réactiver'
                                             }>
                                                 <span>
                                                     <IconButton
