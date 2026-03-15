@@ -17,7 +17,9 @@ class AxiosService implements IAxiosService {
 
     private constructor() {
         this.axiosInstance = axios.create({
-            baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+            // En dev : VITE_API_BASE_URL est vide → baseURL = '' → le proxy Vite intercepte /api/*
+            // En prod : VITE_API_BASE_URL = 'http://kalynow.mg'
+            baseURL: import.meta.env.VITE_API_BASE_URL ?? '',
             timeout: 30000,
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +68,7 @@ class AxiosService implements IAxiosService {
                 // Ajout d'un ID de requête pour le debugging  
                 (config as any).requestId = Math.random().toString(36).substr(2, 9);
                 (config as any).startTime = Date.now();
-                
+
                 return config;
             },
             (error) => {
@@ -81,7 +83,7 @@ class AxiosService implements IAxiosService {
                 // Log du temps de réponse pour monitoring
                 const duration = Date.now() - ((response.config as any).startTime || 0);
                 console.debug(`Requête ${(response.config as any).requestId} terminée en ${duration}ms`);
-                
+
                 return response;
             },
             (error) => {
@@ -92,7 +94,7 @@ class AxiosService implements IAxiosService {
                     message: error.response?.data?.message || error.message,
                     url: error.config?.url
                 });
-                
+
                 return Promise.reject(error);
             }
         );

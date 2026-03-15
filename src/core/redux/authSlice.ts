@@ -26,7 +26,7 @@ export const loginProvider = createAsyncThunk(
     async (credentials: LoginCredentials, { rejectWithValue }) => {
         const authService = AuthService.getInstance();
         const result = await authService.login(credentials);
-        
+
         if (result.isRight()) {
             const userResult = authService.getCurrentUser();
             if (userResult.isRight()) {
@@ -34,7 +34,7 @@ export const loginProvider = createAsyncThunk(
             }
             return rejectWithValue('Impossible de récupérer les données utilisateur');
         }
-        
+
         return rejectWithValue(result.value.message);
     }
 );
@@ -45,11 +45,11 @@ export const logoutProvider = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         const authService = AuthService.getInstance();
         const result = await authService.logout();
-        
+
         if (result.isLeft()) {
             return rejectWithValue(result.value.message);
         }
-        
+
         return true;
     }
 );
@@ -59,7 +59,7 @@ export const checkAuthProvider = createAsyncThunk(
     'auth/checkAuth',
     async (_, { rejectWithValue }) => {
         const authService = AuthService.getInstance();
-        
+
         try {
             const isAuth = authService.isAuthenticated();
             if (isAuth) {
@@ -105,14 +105,23 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.user = null;
             })
-            
+
             // Logout
+            .addCase(logoutProvider.pending, (state) => {
+                state.isLoading = true;
+            })
             .addCase(logoutProvider.fulfilled, (state) => {
+                state.isLoading = false;
                 state.isAuthenticated = false;
                 state.user = null;
                 state.error = null;
             })
-            
+            .addCase(logoutProvider.rejected, (state) => {
+                state.isLoading = false;
+                state.isAuthenticated = false;
+                state.user = null;
+            })
+
             // Check auth
             .addCase(checkAuthProvider.pending, (state) => {
                 state.isLoading = true;

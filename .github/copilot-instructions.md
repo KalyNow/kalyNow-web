@@ -1485,6 +1485,37 @@ export default JobOfferList;
 
 ## 📝 Notes importantes
 
+### Constantes de rôles utilisateur
+
+**Ne jamais utiliser de strings littérales pour les rôles.** Toujours importer et utiliser les constantes depuis `src/core/constants/roles.ts`.
+
+```typescript
+// ✅ BON
+import { USER_ROLES } from '../../../../core/constants/roles';
+
+if (user.role === USER_ROLES.SELLER) { ... }
+<RoleRoute requiredRole={USER_ROLES.BUYER} ... />
+
+// ❌ MAUVAIS
+if (user.role === 'SELLER') { ... }
+<RoleRoute requiredRole="BUYER" ... />
+```
+
+Le fichier `src/core/constants/roles.ts` est la **source de vérité unique** pour les valeurs de rôles :
+```typescript
+export const USER_ROLES = {
+    SELLER: 'SELLER',
+    BUYER: 'BUYER',
+    ADMIN: 'ADMIN',
+} as const;
+
+export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
+```
+
+Le type `UserRole` doit être utilisé partout où un rôle est attendu en paramètre (guards, redirections, conditions).
+
+---
+
 ### Gestion des dépendances
 
 Les dépendances doivent toujours suivre ce flux :

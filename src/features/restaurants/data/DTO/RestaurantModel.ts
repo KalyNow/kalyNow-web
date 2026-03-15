@@ -2,19 +2,21 @@ import { z } from 'zod';
 import { RestaurantEntity } from '../../domain/entities/RestaurantEntity';
 import { AppError } from '../../../../core/types/AppError';
 
+// Schéma correspondant à la réponse réelle de l'API offer-service (MongoDB)
 const RestaurantApiSchema = z.object({
-    id: z.string().uuid(),
+    id: z.string(),
+    ownerId: z.string(),
     name: z.string().min(1),
-    description: z.string(),
+    description: z.string().optional().default(''),
     address: z.string(),
-    city: z.string(),
     phone: z.string().nullable().optional(),
-    email: z.string().email().nullable().optional(),
-    cuisine: z.string(),
-    rating: z.number().min(0).max(5),
-    image_url: z.string().url().nullable().optional(),
-    is_open: z.boolean(),
-    created_at: z.string().datetime(),
+    email: z.string().nullable().optional(),
+    logoUrl: z.string().nullable().optional(),
+    latitude: z.number().nullable().optional(),
+    longitude: z.number().nullable().optional(),
+    isActive: z.boolean().optional().default(true),
+    createdAt: z.string().datetime().or(z.date()),
+    updatedAt: z.string().datetime().or(z.date()),
 });
 
 export type RestaurantApiType = z.infer<typeof RestaurantApiSchema>;
@@ -25,17 +27,18 @@ export class RestaurantModel {
             const data = RestaurantApiSchema.parse(json);
             return new RestaurantEntity(
                 data.id,
+                data.ownerId,
                 data.name,
                 data.description,
                 data.address,
-                data.city,
                 data.phone ?? null,
                 data.email ?? null,
-                data.cuisine,
-                data.rating,
-                data.image_url ?? null,
-                data.is_open,
-                new Date(data.created_at)
+                data.logoUrl ?? null,
+                data.latitude ?? null,
+                data.longitude ?? null,
+                data.isActive,
+                new Date(data.createdAt as string),
+                new Date(data.updatedAt as string)
             );
         } catch (error) {
             if (error instanceof z.ZodError) {
