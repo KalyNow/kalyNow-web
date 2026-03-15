@@ -13,10 +13,10 @@ import OfferDetailPage from '../features/offers/presentation/pages/OfferDetailPa
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2',
+            main: '#C75B12',
         },
         secondary: {
-            main: '#dc004e',
+            main: '#FFB067',
         },
     },
 });
