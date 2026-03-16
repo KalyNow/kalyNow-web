@@ -1,21 +1,23 @@
 import { z } from 'zod';
-import { OfferEntity } from '../../domain/entities/OfferEntity';
+import { OfferEntity, OfferStatus } from '../../domain/entities/OfferEntity';
 import { AppError } from '../../../../core/types/AppError';
 
+// Matches the real NestJS offer-service response shape
 const OfferApiSchema = z.object({
-    id: z.string().uuid(),
+    id: z.string(),
+    restaurantId: z.string(),
     title: z.string().min(1),
-    description: z.string(),
-    restaurant_id: z.string().uuid(),
-    restaurant_name: z.string(),
-    discount_percent: z.number().min(0).max(100).nullable().optional(),
-    original_price: z.number().nonnegative().nullable().optional(),
-    discounted_price: z.number().nonnegative().nullable().optional(),
-    image_url: z.string().url().nullable().optional(),
-    valid_from: z.string().datetime(),
-    valid_until: z.string().datetime(),
-    is_active: z.boolean(),
-    created_at: z.string().datetime(),
+    description: z.string().optional().default(''),
+    price: z.number().nonnegative(),
+    discountedPrice: z.number().nonnegative().nullable().optional(),
+    availableFrom: z.string().datetime().nullable().optional(),
+    availableTo: z.string().datetime().nullable().optional(),
+    imageUrls: z.array(z.string()).default([]),
+    isActive: z.boolean().default(true),
+    quantity: z.number().nonnegative().nullable().optional(),
+    status: z.nativeEnum(OfferStatus).optional(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
 });
 
 export type OfferApiType = z.infer<typeof OfferApiSchema>;
@@ -26,18 +28,19 @@ export class OfferModel {
             const data = OfferApiSchema.parse(json);
             return new OfferEntity(
                 data.id,
+                data.restaurantId,
                 data.title,
                 data.description,
-                data.restaurant_id,
-                data.restaurant_name,
-                data.discount_percent ?? null,
-                data.original_price ?? null,
-                data.discounted_price ?? null,
-                data.image_url ?? null,
-                new Date(data.valid_from),
-                new Date(data.valid_until),
-                data.is_active,
-                new Date(data.created_at)
+                data.price,
+                data.discountedPrice ?? null,
+                data.availableFrom ? new Date(data.availableFrom) : null,
+                data.availableTo ? new Date(data.availableTo) : null,
+                data.imageUrls,
+                data.isActive,
+                data.quantity ?? null,
+                new Date(data.createdAt),
+                new Date(data.updatedAt),
+                data.status ?? OfferStatus.ACTIVE
             );
         } catch (error) {
             if (error instanceof z.ZodError) {

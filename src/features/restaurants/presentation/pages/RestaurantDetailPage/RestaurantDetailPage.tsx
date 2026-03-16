@@ -78,7 +78,7 @@ const RestaurantDetailPage: React.FC = () => {
 
             <Box
                 component="img"
-                src={currentRestaurant.imageUrl || PLACEHOLDER_IMAGES.restaurantDetail}
+                src={currentRestaurant.logoUrl || PLACEHOLDER_IMAGES.restaurantDetail}
                 alt={currentRestaurant.name}
                 sx={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 2, mb: 3 }}
             />
@@ -93,11 +93,6 @@ const RestaurantDetailPage: React.FC = () => {
                 />
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 3 }}>
-                <Chip label={currentRestaurant.cuisine} variant="outlined" />
-                <Chip label={`⭐ ${currentRestaurant.rating.toFixed(1)}`} variant="outlined" />
-            </Box>
-
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 {currentRestaurant.description}
             </Typography>
@@ -106,7 +101,7 @@ const RestaurantDetailPage: React.FC = () => {
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography variant="body1">
-                    📍 {currentRestaurant.address}, {currentRestaurant.city}
+                    📍 {currentRestaurant.address}
                 </Typography>
                 {currentRestaurant.phone && (
                     <Typography variant="body1">

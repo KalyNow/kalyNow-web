@@ -4,7 +4,7 @@ import { PaginatedArray } from '../../../../core/types/PaginatedArray';
 import { IRestaurantsRepository } from '../repositories/IRestaurantsRepository';
 import { IRestaurantsUseCase } from './IRestaurantsUseCase';
 import { RestaurantEntity } from '../entities/RestaurantEntity';
-import { GetRestaurantsFiltersParams, GetRestaurantByIdParams } from '../types/RestaurantsDomainTypes';
+import { GetRestaurantsFiltersParams, GetRestaurantByIdParams, CreateRestaurantParams } from '../types/RestaurantsDomainTypes';
 
 export class RestaurantsUseCase implements IRestaurantsUseCase {
     private repository: IRestaurantsRepository;
@@ -29,5 +29,30 @@ export class RestaurantsUseCase implements IRestaurantsUseCase {
             return left(new AppError('Restaurant ID is required', '400', 'validation_error'));
         }
         return this.repository.getRestaurantById(params);
+    }
+
+    async createRestaurant(
+        params: CreateRestaurantParams
+    ): Promise<Either<AppError, RestaurantEntity>> {
+        if (!params.name || !params.name.trim()) {
+            return left(new AppError('Le nom du restaurant est requis', '400', 'validation_error'));
+        }
+        if (!params.address || !params.address.trim()) {
+            return left(new AppError("L'adresse est requise", '400', 'validation_error'));
+        }
+        return this.repository.createRestaurant(params);
+    }
+
+    async uploadRestaurantLogo(
+        restaurantId: string,
+        file: File
+    ): Promise<Either<AppError, RestaurantEntity>> {
+        if (!restaurantId || !restaurantId.trim()) {
+            return left(new AppError('Restaurant ID requis', '400', 'validation_error'));
+        }
+        if (!file) {
+            return left(new AppError('Fichier requis', '400', 'validation_error'));
+        }
+        return this.repository.uploadRestaurantLogo(restaurantId, file);
     }
 }

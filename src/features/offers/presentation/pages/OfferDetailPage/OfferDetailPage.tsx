@@ -67,6 +67,10 @@ const OfferDetailPage: React.FC = () => {
     }
 
     const isValid = currentOffer.isActive && !currentOffer.isExpired;
+    const coverImage = currentOffer.imageUrls[0] || PLACEHOLDER_IMAGES.offerDetail;
+    const discountPercent = currentOffer.discountedPrice !== null
+        ? Math.round((1 - currentOffer.discountedPrice / currentOffer.price) * 100)
+        : null;
 
     return (
         <Layout>
@@ -76,7 +80,7 @@ const OfferDetailPage: React.FC = () => {
 
             <Box
                 component="img"
-                src={currentOffer.imageUrl || PLACEHOLDER_IMAGES.offerDetail}
+                src={coverImage}
                 alt={currentOffer.title}
                 sx={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 2, mb: 3 }}
             />
@@ -89,14 +93,10 @@ const OfferDetailPage: React.FC = () => {
                     label={isValid ? 'Active' : 'Expired'}
                     color={isValid ? 'success' : 'default'}
                 />
-                {currentOffer.discountPercent !== null && (
-                    <Chip label={`-${currentOffer.discountPercent}%`} color="error" />
+                {discountPercent !== null && (
+                    <Chip label={`-${discountPercent}%`} color="error" />
                 )}
             </Box>
-
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
-                🍽️ {currentOffer.restaurantName}
-            </Typography>
 
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 {currentOffer.description}
@@ -105,28 +105,28 @@ const OfferDetailPage: React.FC = () => {
             <Divider sx={{ mb: 3 }} />
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {currentOffer.discountedPrice !== null && (
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                        <Typography variant="h5" fontWeight={700} color="primary">
-                            ${currentOffer.discountedPrice.toFixed(2)}
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                    <Typography variant="h5" fontWeight={700} color="primary">
+                        ${currentOffer.effectivePrice.toFixed(2)}
+                    </Typography>
+                    {currentOffer.discountedPrice !== null && (
+                        <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            sx={{ textDecoration: 'line-through' }}
+                        >
+                            ${currentOffer.price.toFixed(2)}
                         </Typography>
-                        {currentOffer.originalPrice !== null && (
-                            <Typography
-                                variant="body1"
-                                color="text.secondary"
-                                sx={{ textDecoration: 'line-through' }}
-                            >
-                                ${currentOffer.originalPrice.toFixed(2)}
-                            </Typography>
-                        )}
-                    </Box>
+                    )}
+                </Box>
+                {(currentOffer.availableFrom || currentOffer.availableTo) && (
+                    <Typography variant="body2" color="text.secondary">
+                        {currentOffer.availableFrom && (
+                            <>Valid from <strong>{currentOffer.availableFrom.toLocaleDateString()}</strong>{' '}</>)}
+                        {currentOffer.availableTo && (
+                            <>to <strong>{currentOffer.availableTo.toLocaleDateString()}</strong></>)}
+                    </Typography>
                 )}
-                <Typography variant="body2" color="text.secondary">
-                    Valid from{' '}
-                    <strong>{currentOffer.validFrom.toLocaleDateString()}</strong>
-                    {' '}to{' '}
-                    <strong>{currentOffer.validUntil.toLocaleDateString()}</strong>
-                </Typography>
             </Box>
         </Layout>
     );

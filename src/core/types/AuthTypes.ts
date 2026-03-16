@@ -5,9 +5,11 @@
 export interface TokenPayload {
     exp: number;          // Expiration timestamp
     iat: number;          // Issued at timestamp
-    userId: string;       // ID de l'utilisateur
+    sub: string;          // ID de l'utilisateur (JWT standard claim)
     role: string;         // Rôle de l'utilisateur
     email: string;        // Email de l'utilisateur
+    verified?: boolean;   // Statut de vérification
+    iss?: string;         // Issuer (ex: kalynow-user-service)
     permissions?: string[]; // Permissions optionnelles
 }
 

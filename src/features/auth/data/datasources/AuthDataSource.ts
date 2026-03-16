@@ -33,13 +33,13 @@ export class AuthDataSource implements IAuthDataSource {
 
     async login(params: LoginParams): Promise<AuthTokens> {
         try {
-            const response = await this.axiosService.post('/api/auth/login', {
+            const response = await this.axiosService.post('/api/us/auth/login', {
                 email: this.normalizeEmail(params.email),
                 password: params.password,
             });
 
             if (!response.data?.accessToken || !response.data?.refreshToken) {
-                throw new AppError('Invalid login response', '400', 'invalid_auth_response');
+                throw new AppError('Réponse de connexion invalide', '400', 'invalid_auth_response');
             }
 
             return {
@@ -47,13 +47,13 @@ export class AuthDataSource implements IAuthDataSource {
                 refreshToken: response.data.refreshToken,
             };
         } catch (error) {
-            this.handleAxiosError(error, 'Login failed');
+            this.handleAxiosError(error, 'Échec de la connexion');
         }
     }
 
     async register(params: RegisterParams): Promise<AuthUserEntity> {
         try {
-            const response = await this.axiosService.post('/api/auth/register', {
+            const response = await this.axiosService.post('/api/us/auth/register', {
                 email: this.normalizeEmail(params.email),
                 password: params.password,
                 first_name: params.firstName,

@@ -19,11 +19,11 @@ export class TokenService implements ITokenService {
     private static instance: TokenService;
     private readonly ACCESS_TOKEN_KEY = 'access_token';
     private readonly REFRESH_TOKEN_KEY = 'refresh_token';
-    
+
     // Buffer de 5 minutes avant expiration pour refresh automatique
     private readonly REFRESH_BUFFER_MINUTES = 5;
 
-    private constructor() {}
+    private constructor() { }
 
     public static getInstance(): TokenService {
         if (!TokenService.instance) {
@@ -33,29 +33,33 @@ export class TokenService implements ITokenService {
     }
 
     /**
-     * Récupère le token d'accès avec validation automatique
+     * Récupère le token d'accès avec validation automatique.
+     * NB: On ne supprime PAS les tokens ici si le token est expiré afin de
+     *     préserver le refresh token pour un éventuel renouvellement automatique.
+     *     La suppression n'a lieu que lors d'un logout explicite ou d'un refresh raté.
      */
     public getAccessToken(): Either<AppError, string> {
         try {
             const token = this.getStoredToken(this.ACCESS_TOKEN_KEY);
-            
+
             if (!token) {
                 return left(new AppError("Token d'accès non trouvé", "401", "access_token_not_found"));
             }
 
             const validation = this.validateToken(token);
-            
+
             if (!validation.isValid) {
+                // Token malformé (pas juste expiré) → on peut nettoyer
                 this.clearTokens();
                 return left(new AppError(
-                    validation.error || "Token d'accès invalide", 
-                    "401", 
+                    validation.error || "Token d'accès invalide",
+                    "401",
                     "access_token_invalid"
                 ));
             }
 
             if (validation.isExpired) {
-                this.clearTokens();
+                // Token expiré mais structurellement valide : ne pas supprimer le refresh token
                 return left(new AppError("Token d'accès expiré", "401", "access_token_expired"));
             }
 
@@ -71,7 +75,7 @@ export class TokenService implements ITokenService {
     public getRefreshToken(): Either<AppError, string> {
         try {
             const token = this.getStoredToken(this.REFRESH_TOKEN_KEY);
-            
+
             if (!token) {
                 return left(new AppError("Token de refresh non trouvé", "401", "refresh_token_not_found"));
             }
@@ -97,8 +101,8 @@ export class TokenService implements ITokenService {
             const accessValidation = this.validateToken(accessToken);
             if (!accessValidation.isValid) {
                 return left(new AppError(
-                    "Token d'accès invalide lors du stockage", 
-                    "400", 
+                    "Token d'accès invalide lors du stockage",
+                    "400",
                     "invalid_access_token_format"
                 ));
             }
@@ -106,8 +110,8 @@ export class TokenService implements ITokenService {
             // Validation du token de refresh
             if (!this.isTokenValid(refreshToken)) {
                 return left(new AppError(
-                    "Token de refresh invalide lors du stockage", 
-                    "400", 
+                    "Token de refresh invalide lors du stockage",
+                    "400",
                     "invalid_refresh_token_format"
                 ));
             }
@@ -115,7 +119,7 @@ export class TokenService implements ITokenService {
             // Stockage sécurisé
             this.setStoredToken(this.ACCESS_TOKEN_KEY, accessToken);
             this.setStoredToken(this.REFRESH_TOKEN_KEY, refreshToken);
-            
+
             return right(true);
         } catch (error) {
             return left(new AppError("Erreur lors du stockage des tokens", "500", error));
@@ -149,7 +153,7 @@ export class TokenService implements ITokenService {
             if (!payload || !payload.exp) {
                 return true;
             }
-            
+
             const currentTime = Math.floor(Date.now() / 1000);
             return payload.exp < currentTime;
         } catch {
@@ -168,7 +172,7 @@ export class TokenService implements ITokenService {
             }
 
             // Validation des champs obligatoires
-            if (!payload.userId || !payload.email || !payload.exp || !payload.iat) {
+            if (!payload.sub || !payload.email || !payload.exp || !payload.iat) {
                 return left(new AppError("Token invalide - champs manquants", "400", "token_missing_fields"));
             }
 
@@ -203,7 +207,7 @@ export class TokenService implements ITokenService {
             }
 
             const isExpired = this.isTokenExpired(token);
-            
+
             return {
                 isValid: true,
                 isExpired,
@@ -221,21 +225,33 @@ export class TokenService implements ITokenService {
     }
 
     /**
-     * Détermine s'il faut refresh le token (dans les 5 minutes avant expiration)
+     * Détermine s'il faut refresh le token.
+     * Retourne true si :
+     * - Le refresh token est présent et valide
+     * - L'access token est absent, expiré, ou expire dans moins de REFRESH_BUFFER_MINUTES
      */
     public shouldRefreshToken(): boolean {
         try {
-            const tokenResult = this.getAccessToken();
-            if (tokenResult.isLeft()) {
+            // Vérifier qu'un refresh token valide est disponible
+            const refreshTokenResult = this.getRefreshToken();
+            if (refreshTokenResult.isLeft()) {
                 return false;
             }
 
-            const token = tokenResult.value;
-            const timeRemaining = this.getTokenTimeRemaining(token);
+            // Lire le raw access token sans validation stricte
+            const rawAccessToken = this.getStoredToken(this.ACCESS_TOKEN_KEY);
+
+            // Pas d'access token → on peut tenter un refresh
+            if (!rawAccessToken) {
+                return true;
+            }
+
+            // Access token présent : refresh si invalide, expiré, ou bientôt expiré
+            const timeRemaining = this.getTokenTimeRemaining(rawAccessToken);
             const refreshBufferSeconds = this.REFRESH_BUFFER_MINUTES * 60;
 
-            // Refresh si il reste moins de 5 minutes et que le token n'est pas encore expiré
-            return timeRemaining <= refreshBufferSeconds && timeRemaining > 0;
+            // timeRemaining === 0 signifie expiré ou non-parseable → refresh
+            return timeRemaining <= refreshBufferSeconds;
         } catch {
             return false;
         }
@@ -253,7 +269,7 @@ export class TokenService implements ITokenService {
 
             const currentTime = Math.floor(Date.now() / 1000);
             const timeRemaining = payload.exp - currentTime;
-            
+
             return Math.max(0, timeRemaining);
         } catch {
             return 0;
@@ -286,7 +302,7 @@ export class TokenService implements ITokenService {
             // Correction du padding base64 si nécessaire
             const correctedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
             const decoded = atob(correctedPayload);
-            
+
             return JSON.parse(decoded) as TokenPayload;
         } catch {
             return null;

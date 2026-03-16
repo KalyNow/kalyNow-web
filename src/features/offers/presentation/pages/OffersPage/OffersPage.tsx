@@ -118,7 +118,7 @@ const OffersPage: React.FC = () => {
                                         <CardMedia
                                             component="img"
                                             height="160"
-                                            image={offer.imageUrl || PLACEHOLDER_IMAGES.offer}
+                                            image={offer.imageUrls[0] || PLACEHOLDER_IMAGES.offer}
                                             alt={offer.title}
                                         />
                                         <CardContent>
@@ -138,13 +138,10 @@ const OffersPage: React.FC = () => {
                                             >
                                                 {offer.description}
                                             </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                🍽️ {offer.restaurantName}
-                                            </Typography>
                                             <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                                                {offer.discountPercent !== null && (
+                                                {offer.discountedPrice !== null && (
                                                     <Chip
-                                                        label={`-${offer.discountPercent}%`}
+                                                        label={`-${Math.round((1 - offer.discountedPrice / offer.price) * 100)}%`}
                                                         size="small"
                                                         color="error"
                                                     />
@@ -155,26 +152,24 @@ const OffersPage: React.FC = () => {
                                                     color={offer.isActive && !offer.isExpired ? 'success' : 'default'}
                                                 />
                                             </Box>
-                                            {offer.discountedPrice !== null && (
-                                                <Typography
-                                                    variant="body1"
-                                                    fontWeight={700}
-                                                    color="primary"
-                                                    sx={{ mt: 1 }}
-                                                >
-                                                    ${offer.discountedPrice.toFixed(2)}
-                                                    {offer.originalPrice !== null && (
-                                                        <Typography
-                                                            component="span"
-                                                            variant="body2"
-                                                            color="text.secondary"
-                                                            sx={{ ml: 1, textDecoration: 'line-through' }}
-                                                        >
-                                                            ${offer.originalPrice.toFixed(2)}
-                                                        </Typography>
-                                                    )}
-                                                </Typography>
-                                            )}
+                                            <Typography
+                                                variant="body1"
+                                                fontWeight={700}
+                                                color="primary"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                ${offer.effectivePrice.toFixed(2)}
+                                                {offer.discountedPrice !== null && (
+                                                    <Typography
+                                                        component="span"
+                                                        variant="body2"
+                                                        color="text.secondary"
+                                                        sx={{ ml: 1, textDecoration: 'line-through' }}
+                                                    >
+                                                        ${offer.price.toFixed(2)}
+                                                    </Typography>
+                                                )}
+                                            </Typography>
                                         </CardContent>
                                     </CardActionArea>
                                 </Card>
