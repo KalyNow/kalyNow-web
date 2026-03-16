@@ -102,7 +102,7 @@ const RestaurantsPage: React.FC = () => {
                                         <CardMedia
                                             component="img"
                                             height="160"
-                                            image={restaurant.imageUrl || PLACEHOLDER_IMAGES.restaurant}
+                                            image={restaurant.logoUrl || PLACEHOLDER_IMAGES.restaurant}
                                             alt={restaurant.name}
                                         />
                                         <CardContent>
@@ -123,19 +123,13 @@ const RestaurantsPage: React.FC = () => {
                                                 {restaurant.description}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary">
-                                                📍 {restaurant.city}
+                                                📍 {restaurant.address}
                                             </Typography>
                                             <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                                                <Chip label={restaurant.cuisine} size="small" />
                                                 <Chip
                                                     label={restaurant.isOpen ? 'Open' : 'Closed'}
                                                     size="small"
                                                     color={restaurant.isOpen ? 'success' : 'default'}
-                                                />
-                                                <Chip
-                                                    label={`⭐ ${restaurant.rating.toFixed(1)}`}
-                                                    size="small"
-                                                    variant="outlined"
                                                 />
                                             </Box>
                                         </CardContent>

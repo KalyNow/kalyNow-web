@@ -7,7 +7,6 @@ import {
     GetOfferByIdParams,
     CreateOfferParams,
     UpdateOfferParams,
-    DeleteOfferParams,
     UploadOfferImageParams,
 } from '../types/OffersDomainTypes';
 
