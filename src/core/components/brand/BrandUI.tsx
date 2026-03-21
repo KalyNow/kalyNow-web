@@ -79,23 +79,25 @@ export const GlassCard: React.FC<{
     texte: string;
     delay?: number;
 }> = ({ icon, titre, texte, delay = 0 }) => (
-    <RevealCard delay={delay} sx={{ flex: 1, minWidth: 200 }}>
+    <RevealCard delay={delay}>
         <Paper
             elevation={0}
             sx={{
-                p: 3.5,
+                p: { xs: 2.5, sm: 3, md: 3.5 },
                 height: '100%',
                 borderRadius: 4,
                 background: BRAND.glass,
-                backdropFilter: 'blur(18px)',
-                WebkitBackdropFilter: 'blur(18px)',
                 border: `1px solid ${BRAND.glassBorder}`,
-                color: '#fff',
-                transition: 'box-shadow .3s ease, transform .3s ease, border-color .3s ease',
+                color: BRAND.textStrong,
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                boxShadow: '0 18px 40px rgba(0, 0, 0, 0.24)',
+                transition: 'box-shadow .3s ease, transform .3s ease, border-color .3s ease, background-color .3s ease',
                 '&:hover': {
-                    boxShadow: '0 20px 40px rgba(199,91,18,0.22)',
-                    transform: 'translateY(-6px)',
+                    boxShadow: '0 24px 48px rgba(0, 0, 0, 0.34)',
+                    transform: 'translateY(-4px)',
                     borderColor: BRAND.glassBorderHover,
+                    backgroundColor: 'rgba(255,255,255,0.06)',
                 },
             }}
         >
@@ -104,7 +106,7 @@ export const GlassCard: React.FC<{
                     width: 48,
                     height: 48,
                     borderRadius: 3,
-                    background: 'linear-gradient(135deg, rgba(199,91,18,0.55) 0%, rgba(255,176,103,0.25) 100%)',
+                    background: 'linear-gradient(135deg, rgba(199,91,18,0.30) 0%, rgba(255,176,103,0.14) 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -115,7 +117,7 @@ export const GlassCard: React.FC<{
             >
                 {icon}
             </Box>
-            <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: BRAND.secondary }}>
+            <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: BRAND.textStrong }}>
                 {titre}
             </Typography>
             <Typography variant="body2" sx={{ color: BRAND.textMuted, lineHeight: 1.75 }}>
@@ -140,9 +142,8 @@ export const StepBadge: React.FC<{
             minWidth: size,
             height: size,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, rgba(199,91,18,0.7) 0%, rgba(255,176,103,0.35) 100%)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,176,103,0.35)',
+            background: 'linear-gradient(135deg, rgba(199,91,18,0.34) 0%, rgba(255,176,103,0.18) 100%)',
+            border: '1px solid rgba(255,176,103,0.20)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -191,28 +192,27 @@ export const AppStoreBadge: React.FC<{ store: 'apple' | 'google'; onClick?: () =
             px: 3,
             py: 1.5,
             borderRadius: 3,
-            background: 'rgba(255,255,255,0.06)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            color: '#fff',
+            background: 'rgba(255,255,255,0.04)',
+            border: `1px solid ${BRAND.glassBorder}`,
+            color: BRAND.textStrong,
             cursor: 'pointer',
             outline: 'none',
             transition: 'transform .25s ease, box-shadow .25s ease, background .25s ease',
             '&:hover': {
                 transform: 'translateY(-3px)',
-                background: 'rgba(255,255,255,0.1)',
-                boxShadow: '0 10px 28px rgba(0,0,0,0.35)',
+                background: 'rgba(255,255,255,0.07)',
+                boxShadow: '0 10px 28px rgba(0,0,0,0.28)',
             },
         }}
     >
-        <Box sx={{ color: '#fff', display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ color: BRAND.textStrong, display: 'flex', alignItems: 'center' }}>
             {store === 'apple' ? <AppleLogoSvg /> : <GooglePlayLogoSvg />}
         </Box>
         <Box sx={{ textAlign: 'left' }}>
-            <Typography sx={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', lineHeight: 1, mb: 0.25 }}>
+            <Typography sx={{ fontSize: 10, color: BRAND.textMuted, lineHeight: 1, mb: 0.25 }}>
                 {store === 'apple' ? 'Disponible sur' : 'Disponible sur'}
             </Typography>
-            <Typography sx={{ fontSize: 16, fontWeight: 700, lineHeight: 1, color: '#fff' }}>
+            <Typography sx={{ fontSize: 16, fontWeight: 700, lineHeight: 1, color: BRAND.textStrong }}>
                 {store === 'apple' ? 'App Store' : 'Google Play'}
             </Typography>
         </Box>

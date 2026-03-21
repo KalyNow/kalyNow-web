@@ -22,11 +22,40 @@ import RestaurantOffersPage from '../features/restaurants/presentation/pages/Res
 // Guards
 import RoleRoute from './guards/RoleRoute';
 import { USER_ROLES } from './constants/roles';
+import { BRAND } from './theme/brandTokens';
 
 const theme = createTheme({
     palette: {
-        primary: { main: '#C75B12' },
-        secondary: { main: '#FFB067' },
+        mode: 'dark',
+        primary: { main: BRAND.primary },
+        secondary: { main: BRAND.secondary },
+        background: {
+            default: BRAND.bgDark,
+            paper: BRAND.surfaceStrong,
+        },
+        text: {
+            primary: BRAND.textStrong,
+            secondary: BRAND.textMuted,
+        },
+    },
+    shape: {
+        borderRadius: 14,
+    },
+    components: {
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    backgroundImage: 'none',
+                },
+            },
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundImage: 'none',
+                },
+            },
+        },
     },
 });
 

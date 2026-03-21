@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Container } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import { APP_NAME } from '../../app/constants';
+import { BRAND } from '../../core/theme/brandTokens';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -10,7 +11,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, maxWidth = 'lg' }) => {
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: BRAND.bg, color: BRAND.textStrong }}>
             <Navbar />
             <Box component="main" sx={{ flexGrow: 1, py: 4 }}>
                 <Container maxWidth={maxWidth}>
@@ -23,9 +24,10 @@ const Layout: React.FC<LayoutProps> = ({ children, maxWidth = 'lg' }) => {
                     py: 2,
                     px: 3,
                     mt: 'auto',
-                    backgroundColor: 'grey.100',
+                    backgroundColor: BRAND.surfaceSoft,
+                    borderTop: `1px solid ${BRAND.glassBorder}`,
                     textAlign: 'center',
-                    color: 'text.secondary',
+                    color: BRAND.textMuted,
                     fontSize: '0.875rem',
                 }}
             >
